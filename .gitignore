@@ -1,0 +1,27 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# Environment Variables (CRITICAL: Never upload .env)
+.env
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# VS Code / IDE settings
+.vscode/
+.idea/
+
+# Mac OS junk
+.DS_Store
