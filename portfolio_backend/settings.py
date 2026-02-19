@@ -205,7 +205,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
 
 # You can also specify explicit CORS origins if needed
-CORS_ALLOWED_ORIGINS = [origin for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if origin]
+CORS_ALLOWED_ORIGINS = [origin for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'https://portfolio-web-app-frontend-ashen.vercel.app,http://localhost:5173').split(',') if origin]
 # Example: CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 
 
@@ -213,7 +213,7 @@ CORS_ALLOWED_ORIGINS = [origin for origin in os.getenv('CORS_ALLOWED_ORIGINS', '
 # # CSRF
 # # =========================
 # # Trusted origins for CSRF protection
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost,https://shawanda-abiding-rayne.ngrok-free.dev').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost,https://shawanda-abiding-rayne.ngrok-free.dev,https://portfolio-web-app-frontend-ashen.vercel.app').split(',')
 # # Add ngrok domains if using tunnels
 # # CSRF_TRUSTED_ORIGINS += [
 # #     'https://*.ngrok-free.app',
