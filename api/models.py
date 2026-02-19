@@ -14,6 +14,8 @@ class Profile(models.Model):
     linkedin_link = models.URLField(blank=True)
     twitter_link = models.URLField(blank=True)
     leetcode_link = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -28,6 +30,8 @@ class Skill(models.Model):
     name = models.CharField(max_length=50)
     percentage = models.IntegerField()
     category = models.CharField(max_length=4, choices=CATEGORY_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -39,6 +43,8 @@ class Experience(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.role} at {self.company_name}"
@@ -50,6 +56,8 @@ class Project(models.Model):
     tech_stack = models.CharField(max_length=200, blank=True, null=True)
     github_link = models.URLField(blank=True)
     live_url = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.title
@@ -58,6 +66,8 @@ class Certification(models.Model):
     title = models.CharField(max_length=100)
     image = models.URLField(blank=True, null=True)
     pdf_file = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.title
@@ -68,6 +78,8 @@ class Education(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.degree} - {self.institution}"
@@ -77,6 +89,8 @@ class Contact(models.Model):
     email = models.EmailField()
     message = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Message from {self.name}"
@@ -91,6 +105,8 @@ class ContactInfo(models.Model):
     github_link = models.URLField(blank=True)
     twitter_link = models.URLField(blank=True)
     leetcode_link = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "Contact Information"

@@ -82,7 +82,7 @@ class ProfileView(APIView):
             profile = self.get_object(pk)
             serializer = ProfileSerializer(profile)
         else:
-            profiles = Profile.objects.all()
+            profiles = Profile.objects.all().order_by('-created_at')
             serializer = ProfileSerializer(profiles, many=True)
         
         return APIResponse.get_success_response(
@@ -162,7 +162,7 @@ class SkillView(APIView):
             skill = self.get_object(pk)
             serializer = SkillSerializer(skill)
         else:
-            skills = Skill.objects.all()
+            skills = Skill.objects.all().order_by('-created_at')
             serializer = SkillSerializer(skills, many=True)
         
         return APIResponse.get_success_response(
@@ -220,7 +220,7 @@ class ExperienceView(APIView):
             experience = self.get_object(pk)
             serializer = ExperienceSerializer(experience)
         else:
-            experiences = Experience.objects.all()
+            experiences = Experience.objects.all().order_by('-created_at')
             serializer = ExperienceSerializer(experiences, many=True)
         
         return APIResponse.get_success_response(
@@ -288,7 +288,7 @@ class ProjectView(APIView):
             project = self.get_object(pk)
             serializer = ProjectSerializer(project)
         else:
-            projects = Project.objects.all()
+            projects = Project.objects.all().order_by('-created_at')
             serializer = ProjectSerializer(projects, many=True)
         
         return APIResponse.get_success_response(
@@ -356,7 +356,7 @@ class CertificationView(APIView):
             cert = self.get_object(pk)
             serializer = CertificationSerializer(cert)
         else:
-            certs = Certification.objects.all()
+            certs = Certification.objects.all().order_by('-created_at')
             serializer = CertificationSerializer(certs, many=True)
         
         return APIResponse.get_success_response(
@@ -432,7 +432,7 @@ class EducationView(APIView):
             education = self.get_object(pk)
             serializer = EducationSerializer(education)
         else:
-            educations = Education.objects.all()
+            educations = Education.objects.all().order_by('-created_at')
             serializer = EducationSerializer(educations, many=True)
         
         return APIResponse.get_success_response(
@@ -499,7 +499,7 @@ class ContactView(APIView):
             contact = self.get_object(pk)
             serializer = ContactSerializer(contact)
         else:
-            contacts = Contact.objects.all()
+            contacts = Contact.objects.all().order_by('-created_at')
             serializer = ContactSerializer(contacts, many=True)
         
         return APIResponse.get_success_response(
@@ -557,7 +557,7 @@ class ContactInfoView(APIView):
             contact_info = self.get_object(pk)
             serializer = ContactInfoSerializer(contact_info)
         else:
-            contact_infos = ContactInfo.objects.all()
+            contact_infos = ContactInfo.objects.all().order_by('-created_at')
             serializer = ContactInfoSerializer(contact_infos, many=True)
         
         return APIResponse.get_success_response(
