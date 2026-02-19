@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'api',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -89,12 +91,36 @@ WSGI_APPLICATION = 'portfolio_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# ===========================
+# SQLite Configuration (OLD)
+# ===========================
+# Commented out during migration to PostgreSQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# ===========================
+# PostgreSQL Configuration
+# ===========================
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': os.getenv('DB_SSLMODE', 'prefer'),
+        },
     }
 }
+
 
 
 # Password validation
@@ -135,6 +161,24 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Cloudinary Storage
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
+
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': os.getenv('CLOUDINARY_URL', '').split('@')[1] if '@' in os.getenv('CLOUDINARY_URL', '') else '',
+#     'API_KEY': os.getenv('CLOUDINARY_URL', '').split('://')[1].split(':')[0] if '://' in os.getenv('CLOUDINARY_URL', '') else '',
+#     'API_SECRET': os.getenv('CLOUDINARY_URL', '').split(':')[2].split('@')[0] if ':' in os.getenv('CLOUDINARY_URL', '') else '',
+# }
+
+
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+
+
 
 
 # =========================
