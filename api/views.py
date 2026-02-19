@@ -17,7 +17,8 @@ from .serializers import (
     ProfileSerializer, SkillSerializer, ExperienceSerializer,
     ProjectSerializer, CertificationSerializer, EducationSerializer, 
     ContactSerializer,ContactInfoSerializer
-)      
+)
+from .util.cloudinary_util import upload_to_cloudinary
 # ==================== Authentication ====================
 # class LoginView(TokenObtainPairView):
 #     """Custom JWT login view"""
@@ -91,7 +92,18 @@ class ProfileView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        serializer = ProfileSerializer(data=request.data)
+        data = request.data.copy() # Make mutable copy
+
+        # Handle file uploads manually
+        if 'profile_picture' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['profile_picture'], folder="profile_pictures")
+            data['profile_picture'] = upload_result.get('secure_url')
+        
+        if 'resume' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['resume'], folder="resumes")
+            data['resume'] = upload_result.get('secure_url')
+
+        serializer = ProfileSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -107,7 +119,18 @@ class ProfileView(APIView):
     @transaction.atomic
     def put(self, request, pk):
         profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        data = request.data.copy() # Make mutable copy
+
+        # Handle file uploads manually
+        if 'profile_picture' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['profile_picture'], folder="profile_pictures")
+            data['profile_picture'] = upload_result.get('secure_url')
+        
+        if 'resume' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['resume'], folder="resumes")
+            data['resume'] = upload_result.get('secure_url')
+
+        serializer = ProfileSerializer(profile, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -207,7 +230,12 @@ class ExperienceView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        serializer = ExperienceSerializer(data=request.data)
+        data = request.data.copy()
+        if 'logo' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['logo'], folder="company_logos")
+            data['logo'] = upload_result.get('secure_url')
+
+        serializer = ExperienceSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -223,7 +251,12 @@ class ExperienceView(APIView):
     @transaction.atomic
     def put(self, request, pk):
         experience = self.get_object(pk)
-        serializer = ExperienceSerializer(experience, data=request.data, partial=True)
+        data = request.data.copy()
+        if 'logo' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['logo'], folder="company_logos")
+            data['logo'] = upload_result.get('secure_url')
+
+        serializer = ExperienceSerializer(experience, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -265,7 +298,12 @@ class ProjectView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['image'], folder="project_images")
+            data['image'] = upload_result.get('secure_url')
+
+        serializer = ProjectSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -281,7 +319,12 @@ class ProjectView(APIView):
     @transaction.atomic
     def put(self, request, pk):
         project = self.get_object(pk)
-        serializer = ProjectSerializer(project, data=request.data, partial=True)
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['image'], folder="project_images")
+            data['image'] = upload_result.get('secure_url')
+
+        serializer = ProjectSerializer(project, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -323,7 +366,16 @@ class CertificationView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        serializer = CertificationSerializer(data=request.data)
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['image'], folder="cert_images")
+            data['image'] = upload_result.get('secure_url')
+        
+        if 'pdf_file' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['pdf_file'], folder="cert_pdfs")
+            data['pdf_file'] = upload_result.get('secure_url')
+
+        serializer = CertificationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(
@@ -339,7 +391,16 @@ class CertificationView(APIView):
     @transaction.atomic
     def put(self, request, pk):
         cert = self.get_object(pk)
-        serializer = CertificationSerializer(cert, data=request.data, partial=True)
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['image'], folder="cert_images")
+            data['image'] = upload_result.get('secure_url')
+        
+        if 'pdf_file' in request.FILES:
+            upload_result = upload_to_cloudinary(request.FILES['pdf_file'], folder="cert_pdfs")
+            data['pdf_file'] = upload_result.get('secure_url')
+
+        serializer = CertificationSerializer(cert, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return APIResponse.get_success_response(

@@ -25,3 +25,5 @@ env/
 
 # Mac OS junk
 .DS_Store
+
+migrations/

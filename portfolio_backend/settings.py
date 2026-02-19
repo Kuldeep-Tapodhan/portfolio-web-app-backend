@@ -159,22 +159,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Cloudinary Storage
-# import cloudinary
-# import cloudinary.uploader
-# import cloudinary.api
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': os.getenv('CLOUDINARY_URL', '').split('@')[1] if '@' in os.getenv('CLOUDINARY_URL', '') else '',
-#     'API_KEY': os.getenv('CLOUDINARY_URL', '').split('://')[1].split(':')[0] if '://' in os.getenv('CLOUDINARY_URL', '') else '',
-#     'API_SECRET': os.getenv('CLOUDINARY_URL', '').split(':')[2].split('@')[0] if ':' in os.getenv('CLOUDINARY_URL', '') else '',
-# }
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_URL', '').split('@')[1] if '@' in os.getenv('CLOUDINARY_URL', '') else '',
+    'API_KEY': os.getenv('CLOUDINARY_URL', '').split('://')[1].split(':')[0] if '://' in os.getenv('CLOUDINARY_URL', '') else '',
+    'API_SECRET': os.getenv('CLOUDINARY_URL', '').split(':')[2].split('@')[0] if ':' in os.getenv('CLOUDINARY_URL', '') else '',
+}
 
 
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 
@@ -234,4 +234,30 @@ SIMPLE_JWT = {
         days=int(os.getenv('REFRESH_TOKEN_LIFETIME_DAYS', 1))
     ),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'api': {  # Adjust 'api' to match your app name
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
 }

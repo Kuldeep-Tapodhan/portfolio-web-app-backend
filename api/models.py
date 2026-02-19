@@ -5,8 +5,8 @@ class Profile(models.Model):
     title = models.CharField(max_length=100)
     bio = models.TextField()
     # Added blank=True, null=True to allow creating profile without uploading image immediately
-    profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True) 
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    profile_picture = models.URLField(blank=True, null=True) 
+    resume = models.URLField(blank=True, null=True)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
     address = models.TextField()
@@ -35,7 +35,7 @@ class Skill(models.Model):
 class Experience(models.Model):
     company_name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
-    logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
+    logo = models.URLField(blank=True, null=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     description = models.TextField()
@@ -45,17 +45,19 @@ class Experience(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+    image = models.URLField(blank=True, null=True)
     description = models.TextField()
-    github_link = models.URLField()
+    tech_stack = models.CharField(max_length=200, blank=True, null=True)
+    github_link = models.URLField(blank=True)
+    live_url = models.URLField(blank=True, null=True)
     
     def __str__(self):
         return self.title
 
 class Certification(models.Model):
     title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='certs/', blank=True, null=True)
-    pdf_file = models.FileField(upload_to='certs_pdf/', blank=True, null=True)
+    image = models.URLField(blank=True, null=True)
+    pdf_file = models.URLField(blank=True, null=True)
     
     def __str__(self):
         return self.title
