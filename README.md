@@ -735,4 +735,3 @@ portpolio/                           # Django Backend Root
 **Built with Django REST Framework** 🐍
 
 </div>
-]]>
