@@ -1,4 +1,5 @@
 import ipaddress
+import json
 import logging
 import time
 import traceback
@@ -8,13 +9,29 @@ logger = logging.getLogger('api.request')
 class RequestLoggingMiddleware:
     """
     Middleware to log every incoming HTTP request to the backend APIs,
-    detecting and formatting both IPv4 and IPv6 client IP addresses.
+    detecting and formatting both IPv4 and IPv6 client IP addresses and payload summaries.
     """
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         start_time = time.time()
+
+        # Capture request body for POST/PUT/PATCH before views consume it
+        payload_summary = ""
+        if request.method in ('POST', 'PUT', 'PATCH'):
+            try:
+                body = request.body.decode('utf-8') if request.body else ''
+                if body:
+                    data = json.loads(body)
+                    if isinstance(data, dict):
+                        masked_data = {
+                            k: ('***' if 'password' in k.lower() or 'secret' in k.lower() else v)
+                            for k, v in data.items()
+                        }
+                        payload_summary = f" | Payload: {json.dumps(masked_data)}"
+            except Exception:
+                pass
 
         # Process request
         response = self.get_response(request)
@@ -26,7 +43,7 @@ class RequestLoggingMiddleware:
         ip_info = self.get_client_ip_info(request)
 
         status_code = response.status_code
-        log_msg = f"[{ip_info}] [{request.method}] {request.get_full_path()} -> {status_code} ({duration:.2f}ms) | User: {user_str}"
+        log_msg = f"[{ip_info}] [{request.method}] {request.get_full_path()} -> {status_code} ({duration:.2f}ms) | User: {user_str}{payload_summary}"
 
         if 200 <= status_code < 400:
             logger.info(f"🌐 ✅ {log_msg}")
@@ -52,7 +69,6 @@ class RequestLoggingMiddleware:
     def get_client_ip_info(self, request):
         """
         Extracts and categorizes IPv4 and IPv6 client IP addresses from request headers.
-        Returns a formatted string like 'IPv4: 172.20.0.1' or 'IPv6: 2001:db8::1' or 'IPv4: 1.2.3.4 | IPv6: 2001:db8::1'.
         """
         ip_candidates = []
 
@@ -70,7 +86,6 @@ class RequestLoggingMiddleware:
 
         for raw_ip in ip_candidates:
             clean_ip = raw_ip
-            # Handle IPv4-mapped IPv6 addresses (e.g. ::ffff:192.168.1.1)
             if clean_ip.startswith('::ffff:'):
                 clean_ip = clean_ip[7:]
 
