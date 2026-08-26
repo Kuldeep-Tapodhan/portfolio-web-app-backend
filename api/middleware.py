@@ -3,13 +3,16 @@ import json
 import logging
 import time
 import traceback
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 logger = logging.getLogger('api.request')
 
 class RequestLoggingMiddleware:
     """
     Middleware to log every incoming HTTP request to the backend APIs,
-    detecting and formatting both IPv4 and IPv6 client IP addresses and payload summaries.
+    detecting and formatting IPv4/IPv6 client IP addresses, payload summaries,
+    and enforcing fresh 200 OK responses for API endpoints.
     """
     def __init__(self, get_response):
         self.get_response = get_response
@@ -36,6 +39,14 @@ class RequestLoggingMiddleware:
         # Process request
         response = self.get_response(request)
 
+        # Force fresh 200 OK responses for API endpoints by disabling 304 revalidation
+        if request.path.startswith('/api/'):
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+            if 'ETag' in response:
+                del response['ETag']
+
         duration = (time.time() - start_time) * 1000  # Convert to milliseconds
 
         user = getattr(request, 'user', None)
@@ -57,7 +68,11 @@ class RequestLoggingMiddleware:
     def process_exception(self, request, exception):
         """
         Logs unhandled exceptions with IPv4/IPv6 client info and traceback.
+        Ignores standard Http404 and PermissionDenied exceptions.
         """
+        if isinstance(exception, (Http404, PermissionDenied)):
+            return None
+
         ip_info = self.get_client_ip_info(request)
         logger.error(
             f"🌐 💥 [API EXCEPTION] [{ip_info}] [{request.method}] {request.get_full_path()}\n"
