@@ -6,21 +6,27 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-def upload_to_cloudinary(local_path, folder="portfolio_uploads"):
+def upload_to_cloudinary(local_path, folder="portfolio_uploads", resource_type=None):
     """
     Uploads a local file to Cloudinary and deletes the local file after success.
     
     Args:
-        local_path (str): The absolute path to the local file to upload.
+        local_path (str/file): The file or path to upload.
         folder (str): The folder in Cloudinary to store the file. Defaults to "portfolio_uploads".
+        resource_type (str): "auto", "raw", or "image". Auto-detected for PDFs if omitted.
         
     Returns:
         dict: The Cloudinary upload result dictionary.
-        
-    Raises:
-        Exception: If the upload fails.
     """
     try:
+        # Auto-detect raw resource_type for PDF files to avoid Cloudinary 401 ACL errors
+        if not resource_type:
+            filename = getattr(local_path, 'name', str(local_path)).lower()
+            if filename.endswith('.pdf') or 'pdf' in folder.lower() or 'resume' in folder.lower():
+                resource_type = "raw"
+            else:
+                resource_type = "auto"
+
         # Check if settings are configured
         if hasattr(settings, 'CLOUDINARY_STORAGE'):
              # Configure cloudinary with settings
@@ -31,11 +37,11 @@ def upload_to_cloudinary(local_path, folder="portfolio_uploads"):
             )
 
         # Upload the file
-        logger.info(f"Uploading file: {local_path} to folder: {folder}")
+        logger.info(f"Uploading file: {local_path} to folder: {folder} (resource_type: {resource_type})")
         result = cloudinary.uploader.upload(
             local_path,
             folder=folder,
-            resource_type="auto" # Auto detect file type (image, video, raw for pdf etc)
+            resource_type=resource_type
         )
 
         # Delete local file after upload ONLY if it's a path string
